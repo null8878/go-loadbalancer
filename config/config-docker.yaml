@@ -1,0 +1,23 @@
+listen_addr: ":8080"
+algorithm: "weighted_round_robin"
+log_level: "info"
+
+backends:
+  - url: "http://backend1:9001"
+    weight: 1
+    health_path: "/health"
+  - url: "http://backend2:9002"
+    weight: 2
+    health_path: "/health"
+  - url: "http://backend3:9003"
+    weight: 1
+    health_path: "/health"
+
+health_check:
+  interval: "3s"
+  timeout: "2s"
+  failure_threshold: 3
+
+rate_limit:
+  rate: 100
+  burst: 200

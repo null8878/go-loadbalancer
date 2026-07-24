@@ -1,0 +1,9 @@
+FROM golang:1.22-alpine
+
+WORKDIR /app
+COPY mock-backend/main.go .
+RUN go build -o /mock-backend .
+
+EXPOSE 9001
+
+CMD ["/mock-backend"]

@@ -1,0 +1,55 @@
+services:
+  gobalancer:
+    build: .
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    volumes:
+      - ./config/config-docker.yaml:/etc/gobalancer/config.yaml:ro
+    depends_on:
+      backend1:
+        condition: service_healthy
+      backend2:
+        condition: service_healthy
+      backend3:
+        condition: service_healthy
+    restart: unless-stopped
+
+  backend1:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - PORT=9001
+      - NAME=backend-1
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9001/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+
+  backend2:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - PORT=9002
+      - NAME=backend-2
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9002/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+
+  backend3:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - PORT=9003
+      - NAME=backend-3
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9003/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
